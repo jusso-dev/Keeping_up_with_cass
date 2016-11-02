@@ -37,9 +37,11 @@
             <li>
                 <a href="{{url_for('login')}}" onclick=$("#menu-close").click();>{{login}}</a>
             </li>
+            {%if loggedin%}
             <li>
                 <a href="{{url_for('logout')}}" onclick=$("#menu-close").click();>Logout</a>
             </li>
+            {%endif%}
         </ul>
     </nav>
 
