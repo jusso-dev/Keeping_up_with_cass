@@ -35,9 +35,9 @@
                 <a href="#about" onclick=$("#menu-close").click();>Getting Started</a>
             </li>
             <li>
-                <a href="{{url_for('login')}}" onclick=$("#menu-close").click();>{{login}}</a>
+                <a href="{{url_for('login')}}" onclick=$("#menu-close").click();>Login</a>
             </li>
-            {%if loggedin%}
+            {%if session%}
             <li>
                 <a href="{{url_for('logout')}}" onclick=$("#menu-close").click();>Logout</a>
             </li>

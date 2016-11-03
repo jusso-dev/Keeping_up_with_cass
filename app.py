@@ -1,19 +1,16 @@
-from flask import Flask, render_template, request, url_for, redirect, session, g
+from flask import Flask, render_template, request, url_for, redirect, session
 from model import User, user_datastore
 from flask.ext.security import Security, MongoEngineUserDatastore, \
 UserMixin, login_required
 import os
-from werkzeug import security as sec
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.urandom(16)
+
 @app.route("/")
 def index():
-    gettingStarted = 'Getting Started'
-    login = 'Login'
-    return render_template('index.html',
-    gettingstarted=gettingStarted, login=login)
+    return render_template('index.html')
     
-
 @app.route('/register', methods=['POST', 'GET'])
 def register():
 
@@ -35,7 +32,8 @@ def register():
         password=request.form['password'])
         user_datastore.commit()
 
-        return 'Success you registered!'   
+        session['firstname'] = request.form['firstname']
+        return 'Success you registered!'
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -51,14 +49,16 @@ def login():
         password = user_datastore.find_user(password=request.form['password'])
 
         if user and email and password is not None:
-            
+
+            session['firstname'] = request.form['firstname']
             return redirect(url_for('index'))
+
             
         return render_template('error.html')
         
 @app.route('/logout')
 def logout():
-
+    session.pop('firstname', None)
     return redirect(url_for('index'))   
 
 
