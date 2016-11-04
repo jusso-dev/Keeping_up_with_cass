@@ -43,7 +43,7 @@ def login():
         return render_template('login.html')
 
     if request.method == 'POST':
-
+        
         user = user_datastore.find_user(name=request.form['firstname'])
         email = user_datastore.find_user(email=request.form['email'])
         password = user_datastore.find_user(password=request.form['password'])
@@ -51,7 +51,7 @@ def login():
         if user and email and password is not None:
 
             session['firstname'] = request.form['firstname']
-            return redirect(url_for('index'))
+            return render_template('index.html')
 
             
         return render_template('error.html')
@@ -61,6 +61,16 @@ def logout():
     session.pop('firstname', None)
     return redirect(url_for('index'))   
 
+@app.route('/roster', methods=['GET', 'POST'])
+def rosters():
+    try:
+        session['firstname']
+        if request.method == 'GET':
+            return render_template('roster.html')
+        if session and request.method == 'POST':
+            return redirect(url_for('rosters'))
+    except Exception:
+        return render_template('login.html')
 
 if __name__ == "__main__":
     app.run(threaded=True,debug=True, port=5000)
