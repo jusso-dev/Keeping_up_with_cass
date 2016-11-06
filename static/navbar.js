@@ -1,4 +1,13 @@
-    
+$("#menu-close").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+    // Opens the sidebar menu
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+
     var fixed = false;
     $(document).scroll(function() {
         if ($(this).scrollTop() > 250) {
@@ -23,7 +32,6 @@
             }
         }
     });
-
     var onMapMouseleaveHandler = function(event) {
         var that = $(this);
         that.on('click', onMapClickHandler);
