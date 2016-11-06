@@ -28,9 +28,11 @@ class User(db.Document, UserMixin):
     confirmed_at = db.DateTimeField()
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
-class Roster(db.Document):
-    discription = db.StringField(max_length=255)
-    date = db.DateTimeField()  
+class Roster(db.Document, RoleMixin):
+    dayofweek = db.StringField()
+    date = db.StringField()
+    startandendtime = db.StringField()
+    notes = db.StringField(max_length=255)
 
 user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
