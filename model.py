@@ -24,14 +24,15 @@ class User(db.Document, UserMixin):
     name = db.StringField(max_length=255)
     email = db.StringField(max_length=255, unique=True)
     password = EncryptedStringField(key=_key,max_length=40, required=True)
+    access = db.StringField()
     active = db.BooleanField(default=True)
     confirmed_at = db.DateTimeField()
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
 class Roster(db.Document, RoleMixin):
-    dayofweek = db.StringField()
-    date = db.StringField()
-    startandendtime = db.StringField()
+    dayofweek = db.StringField(required=True, min_length=5)
+    date = db.StringField(required=True, min_length=5)
+    startandendtime = db.StringField(required=True, min_length=10)
     notes = db.StringField(max_length=255)
 
 user_datastore = MongoEngineUserDatastore(db, User, Role)

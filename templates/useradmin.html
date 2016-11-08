@@ -22,7 +22,7 @@
 <div class="container">
 
 	<form class="form-signin" method="POST">
-		<h1 class="form-signin-heading text-muted">Roster Administrator Section</h1>
+		<h1 class="form-signin-heading text-muted">User Administrator Section</h1>
         {% if errorMsg %}
         <div class="alert alert-danger">
         <strong>{{errorMsg}}</strong>
@@ -33,12 +33,12 @@
         <strong>{{successMsg}}</strong>
         </div>
         {% endif %}
-        <input type="text" class="form-control" name="dayofweek" id="dayofweek" placeholder="Day Of Week - required" required="True" autofocus="">
-        <input type="text" class="form-control" name="date" id="date" placeholder= "Date - required" require="True" autofocus="">
-		<input type="text" class="form-control" name="startandendtime" id="startandendtime" placeholder="Start and End Time - required" required="True">
-        <input type="text" class="form-control" name="notes" id="notes" placeholder="Notes">
+        <input type="text" class="form-control" name="name" id="name" placeholder="Name - required" required="True" autofocus="">
+        <input type="text" class="form-control" name="email" id="email" placeholder= "Email - required" require="True" autofocus="">
+		<input type="text" class="form-control" name="password" id="password" placeholder="Password - required" required="True">
+        <input type="text" class="form-control" name="access" id="access" placeholder="Access Role">
 		<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
-        <a href="{{url_for('useradmin')}}">Link to User admin</a>
+        <a href="{{url_for('admin')}}">Link to Roster admin</a>
 	</form>
     </div>
 

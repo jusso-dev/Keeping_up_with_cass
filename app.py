@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect, session
+from flask import Flask, render_template, request, url_for, redirect, session, flash
 from model import User, user_datastore, Role, Roster, db
 from flask.ext.security import Security, MongoEngineUserDatastore, \
 UserMixin, login_required
@@ -25,15 +25,19 @@ def register():
         
         if exsistingUser is not None:
 
-            return 'That email already exsists, need to reset your password?'   
+            errorMsg = 'Oops, that email is already registered, need your password reset?'
+
+            return render_template('register.html', errorMsg=errorMsg)   
         
         user = user_datastore.create_user(name=request.form['firstname'], 
         email=request.form['email'], 
-        password=request.form['password'])
+        password=request.form['password'],
+        access=request.form['access'])
         user_datastore.commit()
 
+        sucessMsg = 'Success you registered!, navigate to the Rosters page, to continue'
         session['firstname'] = request.form['firstname']
-        return 'Success you registered!'
+        return render_template('register.html', sucessMsg=sucessMsg)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -44,17 +48,15 @@ def login():
 
     if request.method == 'POST':
         
-        user = user_datastore.find_user(name=request.form['firstname'])
-        email = user_datastore.find_user(email=request.form['email'])
-        password = user_datastore.find_user(password=request.form['password'])
+        user = user_datastore.find_user(name=request.form['firstname'],
+        email=request.form['email'], password=request.form['password'])
 
-        if user and email and password is not None:
+        if user is not None:
 
             session['firstname'] = request.form['firstname']
             return redirect(url_for('roster'))
 
         return render_template('error.html')
-
 
 @app.route('/roster', methods=['GET', 'POST'])
 def roster():
@@ -68,6 +70,27 @@ def roster():
         
         return redirect(url_for('login'))
 
+@app.route('/useradmin', methods=['GET', 'POST'])
+def useradmin():
+    
+    if session:
+        
+        if request.method == 'GET':
+            
+            return render_template('useradmin.html')
+
+        if request.method == 'POST':
+
+            user = User()
+            user.name = request.form['name']
+            user.email = request.form['email']
+            user.password = request.form['password']
+            user.access = request.form['access']
+            user.save()
+
+            return render_template('useradmin.html')
+
+        
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
 
@@ -75,15 +98,24 @@ def admin():
         
         if request.method == 'POST':
             
-            roster = Roster()
-            roster.dayofweek = request.form['dayofweek']
-            roster.date = request.form['date']
-            roster.startandendtime = request.form['startandendtime']
-            roster.notes = request.form['notes']
-            roster.save()
+            try:
+                roster = Roster()
+                roster.dayofweek = request.form['dayofweek']
+                roster.date = request.form['date']
+                roster.startandendtime = request.form['startandendtime']
+                roster.notes = request.form['notes']
+                roster.save()
 
-            return render_template('admin.html')
-    
+                successMsg = 'Success, results saved successfully, please navigate to the Roster page to view results'
+
+                return render_template('admin.html', successMsg=successMsg)
+
+            except Exception:
+                
+                errorMsg = 'Come on, you can do better than that, please check the feilds and try again.'
+
+                return render_template('admin.html', errorMsg=errorMsg)
+                
         if request.method == 'GET':
             
             return render_template('admin.html')
@@ -94,4 +126,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    app.run(threaded=True,debug=True, port=5001)
+    app.run(threaded=True,debug=True, port=5000)
