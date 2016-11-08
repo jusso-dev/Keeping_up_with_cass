@@ -21,9 +21,9 @@ class Role(db.Document, RoleMixin):
     description = db.StringField(max_length=255)
 
 class User(db.Document, UserMixin):
-    name = db.StringField(max_length=255)
-    email = db.StringField(max_length=255, unique=True)
-    password = EncryptedStringField(key=_key,max_length=40, required=True)
+    name = db.StringField(max_length=255, min_length=4)
+    email = db.StringField(max_length=255, unique=True, min_length=10)
+    password = EncryptedStringField(key=_key,max_length=40, required=True, min_length=4)
     access = db.StringField()
     active = db.BooleanField(default=True)
     confirmed_at = db.DateTimeField()

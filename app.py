@@ -56,7 +56,9 @@ def login():
             session['firstname'] = request.form['firstname']
             return redirect(url_for('roster'))
 
-        return render_template('error.html')
+        errorMsg = 'Sorry, there was an issue logging you in, please check your email and password, and try again'
+        
+        return render_template('login.html', errorMsg=errorMsg)
 
 @app.route('/roster', methods=['GET', 'POST'])
 def roster():
@@ -81,15 +83,24 @@ def useradmin():
 
         if request.method == 'POST':
 
-            user = User()
-            user.name = request.form['name']
-            user.email = request.form['email']
-            user.password = request.form['password']
-            user.access = request.form['access']
-            user.save()
+            try:
+                
+                user = User()
+                user.name = request.form['name']
+                user.email = request.form['email']
+                user.password = request.form['password']
+                user.access = request.form['access']
+                user.save()
+                
+                successMsg = 'Success, user added successfully!'
+                
+                return render_template('useradmin.html', successMsg=successMsg)
+            
+            except Exception:
 
-            return render_template('useradmin.html')
+                errorMsg = 'Sorry that did not work, please check the feilds and try again'
 
+                return render_template('useradmin.html', errorMsg=errorMsg)
         
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
