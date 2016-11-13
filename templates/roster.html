@@ -30,18 +30,18 @@
     <thead>
     <tr>
       <th>Day of Week</th>
-      <th>Date</th>
-      <th>Start and End time</th>
+      <th>Rostered Start Time</th>
+      <th>Rostered End Time</th>
       <th>Notes for day</th>
     </tr>
   </thead>
   <tbody>
     {% for r in rosters %}
     <tr>
-      <td>{{r.dayofweek}}</td>
-      <td>{{r.date}}</td>
-      <td>{{r.startandendtime}}</td>
-      <td>{{r.notes}}</td>
+      <td>{{r.Day_Of_Week}}</td>
+      <td>{{r.Rostered_Start}}</td>
+      <td>{{r.Rostered_End}}</td>
+      <td>{{r.Notes}}</td>
       {% endfor %}
     </tr>
   </tbody>

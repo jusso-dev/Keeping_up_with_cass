@@ -33,6 +33,11 @@
                 <a href="/roster" onclick=$("#menu-close").click();>Rosters</a>
             </li>
             {% endif %}
+            {%if session%}
+            <li>
+                <a href="/admin" onclick=$("#menu-close").click();>Admin</a>
+            </li>
+            {% endif %}
             <li>
                 <a href="{{url_for('login')}}" onclick=$("#menu-close").click();>Sign In</a>
             </li>

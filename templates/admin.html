@@ -12,6 +12,7 @@
     <link href="/static/css/stylish-portfolio.css" rel="stylesheet">
     <link href="/static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="/static/css/login.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-datetimepicker.css">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 </head>
 
@@ -23,6 +24,10 @@
 
 	<form class="form-signin" method="POST">
 		<h1 class="form-signin-heading text-muted">Roster Administrator Section</h1>
+        <div class="input-append date form_datetime">
+        <input size="16" type="text" value="" readonly>
+        <span class="add-on"><i class="icon-th"></i></span>
+        </div>
         {% if errorMsg %}
         <div class="alert alert-danger">
         <strong>{{errorMsg}}</strong>
@@ -35,7 +40,7 @@
         {% endif %}
         <input type="text" class="form-control" name="dayofweek" id="dayofweek" placeholder="Day Of Week - required" required="True" autofocus="">
         <input type="text" class="form-control" name="date" id="date" placeholder= "Date - required" require="True" autofocus="">
-		<input type="text" class="form-control" name="startandendtime" id="startandendtime" placeholder="Start and End Time - required" required="True">
+		
         <input type="text" class="form-control" name="notes" id="notes" placeholder="Notes">
 		<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
         <a href="{{url_for('useradmin')}}"<strong>Link to User admin</strong></a>

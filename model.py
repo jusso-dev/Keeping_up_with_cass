@@ -4,6 +4,8 @@ from flask.ext.security import Security, MongoEngineUserDatastore, \
     UserMixin, RoleMixin, login_required
 import os
 from securemongoengine.fields import *
+from datetime import time
+from flask_admin import Admin
 
 _key = 'workingWithAES256AlgorithmKey32B'
 
@@ -30,10 +32,11 @@ class User(db.Document, UserMixin):
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
 class Roster(db.Document, RoleMixin):
-    dayofweek = db.StringField(required=True, min_length=5)
-    date = db.StringField(required=True, min_length=5)
-    startandendtime = db.StringField(required=True, min_length=10)
-    notes = db.StringField(max_length=255)
+    Day_Of_Week = db.StringField(min_length=4)
+    Date = db.StringField(min_length=4)
+    Rostered_Start = db.StringField(min_length=2, required=True)
+    Rostered_End = db.StringField(min_length=2, required=True)
+    Notes = db.StringField(max_length=255)
 
 user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)

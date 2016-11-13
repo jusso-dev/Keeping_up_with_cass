@@ -2,10 +2,16 @@ from flask import Flask, render_template, request, url_for, redirect, session, f
 from model import User, user_datastore, Role, Roster, db
 from flask.ext.security import Security, MongoEngineUserDatastore, \
 UserMixin, login_required
+from flask_admin import Admin
+from flask_admin.contrib.mongoengine import ModelView
 import os
+import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(16)
+admin = Admin(app)
+
+admin.add_view(ModelView(Roster))
 
 @app.route("/")
 def index():
@@ -26,13 +32,16 @@ def register():
         if exsistingUser is not None:
 
             errorMsg = 'Oops, that email is already registered, need your password reset?'
+ 
+            return render_template('register.html', errorMsg=errorMsg)
 
-            return render_template('register.html', errorMsg=errorMsg)   
-        
-        user = user_datastore.create_user(name=request.form['firstname'], 
-        email=request.form['email'], 
-        password=request.form['password'],
-        access=request.form['access'])
+        firstname = request.form['firstname'].lower()
+        email = request.form['email'].lower()
+        passwordField = request.form['password']
+
+        user = user_datastore.create_user(name=firstname,
+        email=email, 
+        password=passwordField)
         user_datastore.commit()
 
         sucessMsg = 'Success you registered!, navigate to the Rosters page, to continue'
@@ -47,17 +56,22 @@ def login():
         return render_template('login.html')
 
     if request.method == 'POST':
+
+        firstname = request.form['firstname'].lower()
+        emailFeild = request.form['email'].lower()
+        passwordField = request.form['password']
         
-        user = user_datastore.find_user(name=request.form['firstname'],
-        email=request.form['email'], password=request.form['password'])
+        user = user_datastore.find_user(email=emailFeild, 
+        password=passwordField)
 
         if user is not None:
 
             session['firstname'] = request.form['firstname']
-            return redirect(url_for('roster'))
+            if session:
+                return redirect(url_for('roster'))
 
         errorMsg = 'Sorry, there was an issue logging you in, please check your email and password, and try again'
-        
+
         return render_template('login.html', errorMsg=errorMsg)
 
 @app.route('/roster', methods=['GET', 'POST'])
@@ -98,38 +112,9 @@ def useradmin():
             
             except Exception:
 
-                errorMsg = 'Sorry that did not work, please check the feilds and try again'
+                errorMsg = 'Sorry that did not work, please check the fields and try again'
 
                 return render_template('useradmin.html', errorMsg=errorMsg)
-        
-@app.route('/admin', methods=['GET', 'POST'])
-def admin():
-
-    if session:
-        
-        if request.method == 'POST':
-            
-            try:
-                roster = Roster()
-                roster.dayofweek = request.form['dayofweek']
-                roster.date = request.form['date']
-                roster.startandendtime = request.form['startandendtime']
-                roster.notes = request.form['notes']
-                roster.save()
-
-                successMsg = 'Success, results saved successfully, please navigate to the Roster page to view results'
-
-                return render_template('admin.html', successMsg=successMsg)
-
-            except Exception:
-                
-                errorMsg = 'Come on, you can do better than that, please check the feilds and try again.'
-
-                return render_template('admin.html', errorMsg=errorMsg)
-                
-        if request.method == 'GET':
-            
-            return render_template('admin.html')
 
 @app.route('/logout')
 def logout():
